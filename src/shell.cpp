@@ -1,5 +1,6 @@
 #include "shell.h"
 #include "builtins.h"
+#include "pipeline.h"
 #include "redirection.h"
 #include <iostream>
 #include <vector>
@@ -84,6 +85,12 @@ vector<char *> tokenize_with_redirection(char *command)
             temp_tokens.push_back(string(1, *start));
             start++;
         }
+        else if (*start == '|')
+        {
+            // | operator
+            temp_tokens.push_back("|");
+            start++;
+        }
         else
         {
             // Regular token
@@ -91,7 +98,7 @@ vector<char *> tokenize_with_redirection(char *command)
 
             // Find end of token
             while (*start && *start != ' ' && *start != '\t' && *start != '\n' &&
-                   *start != '<' && *start != '>')
+                   *start != '<' && *start != '>' && *start != '|')
                 start++;
 
             // Add token
@@ -118,7 +125,7 @@ vector<char *> tokenize_simple(char *command)
 {
     // For backward compatibility, use the simpler strtok version for non-redirection cases
     // Check if command contains redirection operators
-    if (strstr(command, "<") || strstr(command, ">"))
+    if (strstr(command, "<") || strstr(command, ">") || strstr(command, "|"))
     {
         return tokenize_with_redirection(command);
     }
@@ -276,6 +283,36 @@ void parse_and_execute(char *command_line)
     }
 
     string cmd(tokens[0]);
+
+    // Check for pipelines
+    bool has_pipe = false;
+    for (char *token : tokens)
+    {
+        if (token && string(token) == "|")
+        {
+            has_pipe = true;
+            break;
+        }
+    }
+
+    if (has_pipe)
+    {
+        // Add pipeline command to history
+        string full_cmd = "";
+        for (size_t i = 0; i < tokens.size() && tokens[i] != nullptr; i++)
+        {
+            if (i > 0)
+                full_cmd += " ";
+            full_cmd += tokens[i];
+        }
+        add_to_history(full_cmd);
+        
+        // Parse and execute pipeline
+        Pipeline pipeline = parse_pipeline(tokens);
+        pipeline.background = background;
+        execute_pipeline(pipeline);
+        return;
+    }
 
     // Check for builtins that don't support background
     if (background && (cmd == "cd" || cmd == "pwd" || cmd == "echo" || cmd == "ls" || cmd == "pinfo" || cmd == "search" || cmd == "history"))

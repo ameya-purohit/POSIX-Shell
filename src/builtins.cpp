@@ -374,17 +374,7 @@ int builtin_cd(vector<char *> args)
     {
         previous_dir = old_dir;
     }
-
-    // Print new directory for cd -
-    if (argc == 2 && arg == "-")
-    {
-        char new_cwd[PATH_MAX];
-        if (getcwd(new_cwd, sizeof(new_cwd)))
-        {
-            cout << new_cwd << endl;
-        }
-    }
-
+    
     return 0;
 }
 

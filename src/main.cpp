@@ -1,5 +1,6 @@
 #include "shell.h"
 #include "builtins.h"
+#include "autocomplete.h"
 #include <iostream>
 #include <cstring>
 #include <unistd.h>
@@ -214,6 +215,7 @@ int main()
     }
 
     setup_signal_handlers();
+    setup_autocomplete(); // Initialize autocomplete functionality
     read_history(".shell_history");
 
     cout << "Welcome to Custom Shell! Type 'exit' to quit.\n";
@@ -226,7 +228,7 @@ int main()
         // Handle Ctrl+D (EOF)
         if (!input)
         {
-            cout << "\nGoodbye!\n";
+            cout << "Goodbye!\n";
             break;
         }
 
