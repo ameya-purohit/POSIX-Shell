@@ -19,7 +19,7 @@ using namespace std;
 pid_t foreground_pid = -1;
 string shell_home_dir = ""; // Global variable to store shell's starting directory
 
-string get_prompt()
+string get_prompt() // generates a dynamic prompt string user_name@system_name:current_directory>
 {
     struct passwd *pw = getpwuid(getuid());
     string username = pw ? pw->pw_name : "user";
@@ -51,7 +51,7 @@ string get_prompt()
         {
             dir.replace(0, shell_home_dir.length(), "~"); // Subdirectory of shell home
         }
-        // If outside shell home tree, show full absolute path (no change to dir)
+        // If outside shell home tree, we show full absolute path (no change to dir)
     }
 
     return username + "@" + hostname + ":" + dir + "> ";

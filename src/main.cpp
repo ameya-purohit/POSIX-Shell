@@ -23,7 +23,7 @@ void sigint_handler(int sig)
     {
         // Kill foreground process and show newline
         kill(foreground_pid, SIGINT);
-        write(STDOUT_FILENO, "\n", 1); // Signal-safe output
+        write(STDOUT_FILENO, "\n", 1);
     }
     else
     {
@@ -54,6 +54,7 @@ void sigtstp_handler(int sig)
         rl_replace_line("", 0);
         rl_redisplay();
     }
+
     else
     {
         // At shell prompt - just show newline and redisplay
@@ -120,13 +121,13 @@ void setup_signal_handlers()
 
 void parse_semicolon_commands(char *input)
 {
-    if (!input || strlen(input) == 0)
+    if (input == nullptr || strlen(input) == 0)
         return;
 
     // Create a copy to work with
     string input_str(input);
 
-    // First, check for semicolons inside quotes and temporarily replace them
+    // Check for semicolons inside quotes and temporarily replace them
     bool in_quotes = false;
     char quote_char = '\0';
     vector<size_t> protected_semicolons;
@@ -208,6 +209,7 @@ int main()
     {
         shell_home_dir = string(cwd);
     }
+
     else
     {
         perror("getcwd");
@@ -218,7 +220,7 @@ int main()
     setup_autocomplete(); // Initialize autocomplete functionality
     read_history(".shell_history");
 
-    cout << "Welcome to Custom Shell! Type 'exit' to quit.\n";
+    cout << "Welcome to Ameya's Custom Shell! Type 'exit' to quit.\n";
 
     while (true)
     {
@@ -226,7 +228,7 @@ int main()
         char *input = readline(prompt.c_str());
 
         // Handle Ctrl+D (EOF)
-        if (!input)
+        if (input == nullptr)
         {
             cout << "Goodbye!\n";
             break;

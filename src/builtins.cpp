@@ -33,7 +33,7 @@ static const int DEFAULT_DISPLAY = 10;
 // Helper function to get user's actual home directory
 string get_user_home_dir()
 {
-    // First try the HOME environment variable
+    // HOME environment variable
     const char *home = getenv("HOME");
     if (home && strlen(home) > 0)
     {
@@ -374,7 +374,7 @@ int builtin_cd(vector<char *> args)
     {
         previous_dir = old_dir;
     }
-    
+
     return 0;
 }
 
