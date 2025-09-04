@@ -25,6 +25,7 @@ void sigint_handler(int sig)
         kill(foreground_pid, SIGINT);
         write(STDOUT_FILENO, "\n", 1);
     }
+
     else
     {
         // At shell prompt - just show newline and redisplay
@@ -124,7 +125,7 @@ void parse_semicolon_commands(char *input)
     if (input == nullptr || strlen(input) == 0)
         return;
 
-    // Create a copy to work with
+    // Created a copy to work with
     string input_str(input);
 
     // Check for semicolons inside quotes and temporarily replace them
@@ -193,7 +194,7 @@ void parse_semicolon_commands(char *input)
 
         if (!cmd.empty())
         {
-            // Create a mutable copy for parse_and_execute
+            // Created a mutable copy for parse_and_execute
             vector<char> cmd_buffer(cmd.begin(), cmd.end());
             cmd_buffer.push_back('\0');
             parse_and_execute(cmd_buffer.data());
@@ -203,7 +204,7 @@ void parse_semicolon_commands(char *input)
 
 int main()
 {
-    // Initialize shell's home directory to current working directory
+    // Initialized shell's home directory to current working directory
     char cwd[PATH_MAX];
     if (getcwd(cwd, sizeof(cwd)))
     {
@@ -217,7 +218,7 @@ int main()
     }
 
     setup_signal_handlers();
-    setup_autocomplete(); // Initialize autocomplete functionality
+    setup_autocomplete(); // Initialized autocomplete functionality
     read_history(".shell_history");
 
     cout << "Welcome to Ameya's Custom Shell! Type 'exit' to quit.\n";

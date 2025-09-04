@@ -23,7 +23,7 @@ bool is_builtin_command(const string &cmd)
             cmd == "exit" || cmd == "pinfo" || cmd == "search" || cmd == "history");
 }
 
-// Parse pipeline from tokens
+// Parses pipeline from tokens
 Pipeline parse_pipeline(vector<char *> &args)
 {
     Pipeline pipeline;
@@ -35,22 +35,21 @@ Pipeline parse_pipeline(vector<char *> &args)
 
         if (arg == "|")
         {
-            // End of current command, start new one
+            // End of current command, starting new one
             if (!current_command.args.empty())
             {
-                // Parse redirection for this command
                 current_command.redirection = parse_redirection(current_command.args);
                 current_command.has_redirection = (current_command.redirection.has_input_redirect ||
                                                    current_command.redirection.has_output_redirect);
 
-                // Use clean args if redirection was found
                 if (current_command.has_redirection && !current_command.redirection.clean_args.empty())
                 {
                     current_command.args = current_command.redirection.clean_args;
                 }
+
                 else
                 {
-                    // Add null terminator
+                    // null terminator
                     current_command.args.push_back(nullptr);
                 }
 
@@ -62,27 +61,24 @@ Pipeline parse_pipeline(vector<char *> &args)
         }
         else
         {
-            // Add argument to current command
             current_command.args.push_back(args[i]);
         }
     }
 
-    // Handle the last command
+    // Handling the last command
     if (!current_command.args.empty())
     {
-        // Parse redirection for this command
         current_command.redirection = parse_redirection(current_command.args);
         current_command.has_redirection = (current_command.redirection.has_input_redirect ||
                                            current_command.redirection.has_output_redirect);
 
-        // Use clean args if redirection was found
         if (current_command.has_redirection && !current_command.redirection.clean_args.empty())
         {
             current_command.args = current_command.redirection.clean_args;
         }
         else
         {
-            // Add null terminator
+            // null terminator
             current_command.args.push_back(nullptr);
         }
 
@@ -92,7 +88,7 @@ Pipeline parse_pipeline(vector<char *> &args)
     return pipeline;
 }
 
-// Execute a single command in the pipeline
+// Executes a single command in the pipeline
 pid_t execute_command_in_pipeline(const Command &cmd, int input_fd, int output_fd)
 {
     if (cmd.args.empty() || cmd.args[0] == nullptr)
@@ -102,7 +98,7 @@ pid_t execute_command_in_pipeline(const Command &cmd, int input_fd, int output_f
 
     string command_name = cmd.args[0];
 
-    // Handle builtin commands differently
+    // Handling builtin commands differently
     if (is_builtin_command(command_name))
     {
         // For builtins in a pipeline, we need to fork to avoid affecting the shell
@@ -194,7 +190,7 @@ pid_t execute_command_in_pipeline(const Command &cmd, int input_fd, int output_f
     }
 }
 
-// Execute entire pipeline
+// Executing entire pipeline
 void execute_pipeline(const Pipeline &pipeline)
 {
     if (pipeline.commands.empty())
@@ -214,7 +210,7 @@ void execute_pipeline(const Pipeline &pipeline)
 
         string command_name = cmd.args[0];
 
-        // Handle builtin commands
+        // Handling builtin commands
         if (is_builtin_command(command_name))
         {
             // Save original stdin/stdout for built-ins
@@ -231,21 +227,21 @@ void execute_pipeline(const Pipeline &pipeline)
                 }
             }
 
-            // Execute builtin
+            // Executing builtin
             vector<char *> builtin_args = cmd.args;
             handle_builtin(builtin_args);
 
-            // Restore stdio
+            // Restoring stdio
             restore_stdio(saved_stdin, saved_stdout);
             return;
         }
         else
         {
-            // External command - use existing execute_command logic
+            // External command - used existing execute_command logic
             vector<char *> external_args = cmd.args;
             if (cmd.has_redirection)
             {
-                // Reconstruct args with redirection for execute_command
+                // Reconstructed args with redirection for execute_command
                 vector<char *> full_args;
                 for (auto arg : cmd.args)
                 {
@@ -255,7 +251,7 @@ void execute_pipeline(const Pipeline &pipeline)
                     }
                 }
 
-                // Add redirection operators back
+                // Added redirection operators back
                 if (cmd.redirection.has_input_redirect)
                 {
                     full_args.push_back(const_cast<char *>("<"));

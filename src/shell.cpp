@@ -51,6 +51,7 @@ string get_prompt() // generates a dynamic prompt string user_name@system_name:c
         {
             dir.replace(0, shell_home_dir.length(), "~"); // Subdirectory of shell home
         }
+
         // If outside shell home tree, we show full absolute path (no change to dir)
     }
 
@@ -123,7 +124,6 @@ vector<char *> tokenize_with_redirection(char *command)
 
 vector<char *> tokenize_simple(char *command)
 {
-    // For backward compatibility, use the simpler strtok version for non-redirection cases
     // Check if command contains redirection operators
     if (strstr(command, "<") || strstr(command, ">") || strstr(command, "|"))
     {
@@ -148,10 +148,9 @@ void execute_command(vector<char *> &args, bool background)
     // Parse redirection before executing
     RedirectionInfo redir = parse_redirection(args);
 
-    // Check if parsing was successful
     if (redir.clean_args.empty() || redir.clean_args[0] == nullptr)
     {
-        return; // Error already printed in parse_redirection
+        return;
     }
 
     pid_t pid = fork();
@@ -217,11 +216,9 @@ void parse_and_execute(char *command_line)
     if (strlen(command_line) == 0)
         return;
 
-    // Handle background execution - improved parsing
     bool background = false;
     int len = strlen(command_line);
 
-    // Look for & at the end, but make sure it's not part of a quoted string
     bool in_quotes = false;
     char quote_char = '\0';
     int amp_pos = -1;
@@ -243,7 +240,6 @@ void parse_and_execute(char *command_line)
         }
     }
 
-    // If we found an & and it's at or near the end (allowing for whitespace)
     if (amp_pos != -1)
     {
         bool is_trailing_amp = true;
@@ -270,7 +266,7 @@ void parse_and_execute(char *command_line)
         }
     }
 
-    // Make a copy for tokenization - use vector for automatic memory management
+    // Make a copy for tokenization
     string command_copy(command_line);
     vector<char> command_buffer(command_copy.begin(), command_copy.end());
     command_buffer.push_back('\0'); // Null terminate
@@ -324,13 +320,11 @@ void parse_and_execute(char *command_line)
     // Check if it's a builtin
     if (cmd == "cd" || cmd == "pwd" || cmd == "echo" || cmd == "ls" || cmd == "exit" || cmd == "pinfo" || cmd == "search" || cmd == "history")
     {
-        // Parse redirection for built-ins
         RedirectionInfo redir = parse_redirection(tokens);
 
-        // Check if parsing was successful
         if (redir.clean_args.empty() || redir.clean_args[0] == nullptr)
         {
-            return; // Error already printed
+            return;
         }
 
         // Save original stdin/stdout for built-ins

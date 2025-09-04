@@ -144,7 +144,7 @@ bool is_command_completion(const char *line_buffer, int start)
             return false; // There's already a command, so this is file completion
     }
 
-    return true; // This is command completion
+    return true; // this is command completion
 }
 
 // Generator function for command completion
@@ -239,11 +239,11 @@ char **shell_completion(const char *text, int start, int end)
 // Initialize autocomplete
 void setup_autocomplete()
 {
-    // Set our custom completion function
+    // Setting our custom completion function
     rl_attempted_completion_function = shell_completion;
 
-    // Set the word break characters (characters that separate words)
-    // Include |, <, > as word separators for proper pipeline and redirection completion
+    // Setting the word break characters (characters that separate words)
+    // Including |, <, > as word separators for proper pipeline and redirection completion
     rl_completer_word_break_characters = (char *)" \t\n\"\\'`@$><=;|&{(";
 
     // Don't append space after completion - let readline handle it naturally

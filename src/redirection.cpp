@@ -137,7 +137,7 @@ bool setup_redirection(const RedirectionInfo &redir)
     return true;
 }
 
-// Restore stdin and stdout (used in parent process if needed)
+// Restore stdin and stdout
 void restore_stdio(int saved_stdin, int saved_stdout)
 {
     if (saved_stdin != -1)

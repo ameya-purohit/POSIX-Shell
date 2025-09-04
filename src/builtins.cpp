@@ -14,7 +14,7 @@
 #include <algorithm>
 #include <unistd.h>
 #include <limits.h>
-#include <fstream>
+#include <cstdio>
 #include <sstream>
 #include <cstdlib>
 
@@ -253,7 +253,6 @@ void builtin_ls(const vector<string> &args)
         }
         else
         {
-            // It's a file
             if (long_format)
             {
                 size_t pos = paths[i].find_last_of('/');
@@ -297,7 +296,7 @@ int builtin_cd(vector<char *> args)
     string user_home = get_user_home_dir();
     string arg = "";
 
-    if (argc == 1) // No arguments - go to user's actual home directory
+    if (argc == 1) // if no arguments - go to user's actual home directory
     {
         dir = user_home.c_str();
     }
@@ -415,14 +414,20 @@ int builtin_echo(vector<char *> args)
 // Helper function to read file content
 string read_file(const string &filename)
 {
-    ifstream file(filename);
-    if (!file.is_open())
+    FILE *file = fopen(filename.c_str(), "r");
+    if (!file)
     {
         return "";
     }
-    string content((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
-    file.close();
-    return content;
+    ostringstream content_stream;
+    char buffer[4096];
+    size_t bytes_read;
+    while ((bytes_read = fread(buffer, 1, sizeof(buffer), file)) > 0)
+    {
+        content_stream.write(buffer, bytes_read);
+    }
+    fclose(file);
+    return content_stream.str();
 }
 
 int builtin_pinfo(vector<char *> args)
@@ -685,8 +690,6 @@ bool handle_builtin(vector<char *> args)
     }
     if (cmd == "exit")
     {
-        // Clean exit - write history and exit normally
-        // write_history(".shell_history");
         exit(0);
     }
 
