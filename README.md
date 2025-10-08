@@ -36,7 +36,7 @@ The shell is designed with a modular architecture for maintainability and clarit
 
 ### File Structure
 ```
-2025202006_Assignment2/
+Posix-Shell/
 ├── README.md                 # This file
 ├── makefile                 # Build configuration
 ├── include/                 # Header files
@@ -76,7 +76,7 @@ The shell is designed with a modular architecture for maintainability and clarit
 sudo apt-get install libreadline-dev
 
 # Clone or extract the project
-cd 2025202006_Assignment2
+cd Posix-Shell
 
 # Compile the shell
 make
@@ -90,7 +90,7 @@ make
 #### Basic Commands
 ```bash
 ameya@ameya-hp:~> pwd
-/home/ameya/2025202006_Assignment2
+/home/ameya/Posix-Shell
 
 ameya@ameya-hp:~> echo "Hello World"
 "Hello World"
@@ -105,7 +105,7 @@ drwxrwxr-x 8 ameya ameya 4096 Sep 04 18:30 ..
 #### Command Chaining
 ```bash
 ameya@ameya-hp:~> pwd; ls; echo "Done"
-/home/ameya/2025202006_Assignment2
+/home/ameya/Posix-Shell
 file1.txt  file2.txt  directory/
 Done
 ```
@@ -196,5 +196,4 @@ The shell has been extensively tested with:
 
 ## 👤 Author
 
-**Ameya Purohit** - Roll Number: 2025202006  
-MTech CSIS, IIIT Hyderabad  
+**Ameya Purohit**
